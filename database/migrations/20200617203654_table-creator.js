@@ -18,7 +18,7 @@ exports.up = function(knex) {
             .notNullable()
             .references('id')
             .inTable('posts');
-        rec.specificType('subreddits', 'string ARRAY');
+        rec.json('subreddits').notNullable();
     })
 };
 

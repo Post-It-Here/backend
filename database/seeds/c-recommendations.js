@@ -6,7 +6,7 @@ exports.seed =   function recommendations(knex) {
       // Inserts seed entries
       return knex('subs').insert([
         {id: 1, subreddits: ['r/golf', 'r/golfclubs', 'r/pga']},
-        {id: 2, subreddits: ['r/codebootcamp', 'r/webdev', 'r/tech']},
+        {id: 2, subreddits: ['r/codebootcamp', 'r/webdev,', 'r/tech']},
         {id: 3, subreddits: ['r/reddit', 'r/somerandomsub']}
       ]);
     });
