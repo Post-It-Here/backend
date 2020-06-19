@@ -1,5 +1,9 @@
 const db = require('../dbConfig');
 
+const addUser = (user) => {
+    return db('users').insert(user);
+}
+
 const getUserBy = (property) => {
     return db()
         .select('*')
@@ -7,4 +11,7 @@ const getUserBy = (property) => {
         .where({ property });
 }
 
-module.exports = { getUserBy };
+module.exports = { 
+    addUser,
+    getUserBy 
+};
