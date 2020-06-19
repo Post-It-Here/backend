@@ -1,5 +1,3 @@
-const { json } = require("express");
-
 exports.seed =   function recommendations(knex) {
   // Deletes ALL existing entries
   return knex('subs').del()
