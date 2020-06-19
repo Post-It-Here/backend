@@ -10,9 +10,11 @@ const server = express();
 server.use(cors());
 server.use(helmet());
 server.use(express.json());
-server.use('/api', authRouter);
-server.use('/api', authenticate, appRouter);
+server.use('/api/auth', authRouter);
+server.use('/api/app', authenticate, appRouter);
 
-server.get('/', () => {
+server.get('/', (req, res) => {
     res.send('Server is running');
 });
+
+module.exports = server;
