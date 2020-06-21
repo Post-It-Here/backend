@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const Posts = require('../../database/models/posts-model');
-const Subs = require('../../database/models/subs-model');
+const Posts = require('../../data/models/posts-model');
+const Subs = require('../../data/models/subs-model');
 
 router.get('/home', async (req, res) => {});
 
