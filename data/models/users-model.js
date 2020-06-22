@@ -4,14 +4,14 @@ const addUser = (user) => {
     return db('users').insert(user);
 }
 
-const getUserBy = (property) => {
-    return db()
+const getUserByUsername = (username) => {
+    return db('users')
         .select('*')
-        .from('users')
-        .where({ property });
+        .where({ username: username })
+        .first();
 }
 
 module.exports = { 
     addUser,
-    getUserBy 
+    getUserByUsername 
 };
