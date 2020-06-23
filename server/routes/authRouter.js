@@ -16,6 +16,7 @@ const generateToken = (user) => {
     return jwt.sign(payload, secret.jwtSecret, options)
 }
 
+// CREATE USER
 router.post('/register', async (req, res) => {
     let { username, password } = req.body;
 
@@ -38,6 +39,7 @@ router.post('/register', async (req, res) => {
     }
 });
 
+// LOGIN
 router.post('/login', async (req, res) => {
     let { username, password } = req.body;
 
