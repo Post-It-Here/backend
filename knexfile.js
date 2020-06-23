@@ -13,6 +13,12 @@ module.exports = {
     },
     seeds: {
       directory: './data/seeds'
+    },
+    pool: {
+      afterCreate: (conn, done) => {
+        // enables foreign keys
+        conn.run('PRAGMA foreign_keys = ON', done);
+      }
     }
   },
 
@@ -33,12 +39,8 @@ module.exports = {
   },
 
   production: {
-    client: 'postgresql',
-    connection: {
-      database: 'my_db',
-      user:     'username',
-      password: 'password'
-    },
+    client: 'pg',
+    connection: process.env.DATABASE_URL,
     pool: {
       min: 2,
       max: 10
