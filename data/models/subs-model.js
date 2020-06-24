@@ -1,19 +1,34 @@
 const db = require('../dbConfig');
+const mappers = require('../helpers/mappers');
 
-const getSubs = () => {
-    return db().select('*').from('subs');
+const get = (id) => {
+    let query = db('subs');
+
+    if (id) {
+        return query
+            .where('id', id)
+            .first()
+            .then(sub => {
+                if (sub) {
+                    return mappers.subToBody(sub);
+                } else {
+                    return null
+                }
+            })
+    } else {
+        return query.then(subs => {
+            return subs.map(sub => mappers.subToBody(sub));
+        })
+    }
 }
 
-const getSubsById = (id) => {
-    return db().select('*').from('subs').where({ id });
-}
-
-const createSubList = (subList) => {
-    return db('subs').insert(subList)
+const createSubs = (subs) => {
+    return db('subs')
+        .insert(subs, 'id')
+        .then(([id]) => {get(id)});
 }
 
 module.exports = {
-    getSubs,
-    getSubsById,
-    createSubList
+    get,
+    createSubs
 }
