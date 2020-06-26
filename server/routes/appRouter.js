@@ -54,7 +54,7 @@ router.post('/posts', async (req, res) => {
             description: description 
         });
         if (post) {
-            // res.status(200).json(post);
+            res.status(200).json(post)
             axios.post('https://post-it-here-data-api.herokuapp.com/api/predict_many', {
                 headers: { 'Content-Type': 'application/json' },
                 title: title,
@@ -69,13 +69,10 @@ router.post('/posts', async (req, res) => {
                         post_id: post_id, 
                         subreddits: stringified 
                     });
-
-                    if (subList) {
-                        post.subs = subList;
-                        res.status(200).json(post);
-                    } else {
-                        console.log('failed')
-                    }
+                    
+                    subList
+                        ? console.log('success')
+                        : console.log('failed')
                 })
                 .catch(err => console.error(err))
         } else {
