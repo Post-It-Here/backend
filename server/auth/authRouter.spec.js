@@ -4,9 +4,11 @@ const server = require('../api/server');
 describe('server.js', () => {
     describe('registration route', () => {
         it('should return 200 status code', async () => {
+            let username = `user-${Math.random() * Math.random()}`;
+            console.log(typeof username);
             return await request(server)
                 .post('/api/auth/register')
-                .send({ username: `user-${Math.random() * Math.random()}`, password: 'password' })
+                .send({ username: username, password: 'password' })
                 .expect(200)
         });
 
