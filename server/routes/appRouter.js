@@ -5,7 +5,7 @@ const Subs = require('../../data/models/subs-model');
 
 //GET A USER'S POSTS
 router.get('/posts', async (req, res) => {
-    const userId = req.params.userId;
+    const userId = req.params.userId || req.query.userId;
 
     try {
         const postList = await Posts.get(userId, undefined);
@@ -21,7 +21,7 @@ router.get('/posts', async (req, res) => {
 //GET A USER'S POST BY ID
 router.get('/posts/:id', async (req, res) => {
     const postId = req.params.id;
-    const userId = req.params.userId;
+    const userId = req.params.userId || req.query.userId;
 
     try {
         const post = await Posts.get(userId, postId);
@@ -41,31 +41,38 @@ router.get('/posts/:id', async (req, res) => {
 router.post('/posts', async (req, res) => {
     console.log(req.params);
     let { title, description } = req.body;
-    let userId = req.query.userId;
+    let userId = req.params.userId || req.query.userId;
 
     if (!title || !description) {
         res.status(500).json({ message: 'You must provide a title & description.' });
     }
 
     try {
-        const post = await Posts.addPost({ 
+        let post = await Posts.addPost(userId, { 
             user_id: userId, 
             title: title, 
             description: description 
         });
         if (post) {
-            res.status(200).json(post);
+            // res.status(200).json(post);
             axios.post('https://post-it-here-data-api.herokuapp.com/api/predict_many', {
+                headers: { 'Content-Type': 'application/json' },
                 title: title,
                 description: description,
             })
                 .then(async res => {
-                    console.log(res);
-                    let subs = JSON.stringify(res.outputData);
-                    const subList = await Subs.addSubs(subs);
+                    console.log(res.data);
+                    let subs = res.data.subreddits;
+                    let stringified = JSON.stringify(subs);
+                    const post_id = post.id;
+                    const subList = await Subs.addSubs({ 
+                        post_id: post_id, 
+                        subreddits: stringified 
+                    });
 
                     if (subList) {
-                        console.log('success');
+                        post.subs = subList;
+                        res.status(200).json(post);
                     } else {
                         console.log('failed')
                     }
@@ -80,21 +87,55 @@ router.post('/posts', async (req, res) => {
 });
 
 //UPDATE A POST
-router.put('/posts', async (req, res) => {});
+router.put('/posts/:id', async (req, res) => {
+    const changes = req.body;
+    const id = req.params.id;
+
+    if (!changes.title && !changes.description) {
+        res.status(500).json({ message: 'You must update the title or description.' });
+    }
+
+    try {
+        const updated = await Posts.updatePost(id, changes);
+
+        if (updated) {
+            res.status(200).json(updated);
+            axios.post('https://post-it-here-data-api.herokuapp.com/api/predict_many', {
+                headers: { 'Content-Type': 'application/json' },
+                title: title,
+                description: description,
+            })
+                .then(async res => {
+                    console.log(res.data);
+                    let subs = res.data.subreddits;
+                    const subList = await Subs.addSubs(JSON.stringify(subs));
+
+                    if (subList) {
+                        console.log('success');
+                    } else {
+                        console.log('failed')
+                    }
+                })
+                .catch(err => console.error(err))
+        }
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
 // DELETE A POST
 router.delete('/posts/:id', async (req, res) => {
     let id = req.params.id;
 
     try {
-        const deleted = Posts.deletePost(id);
+        const deleted = await Posts.deletePost(id);
         if (deleted) {
             res.status(200).json(deleted);
         } else {
             res.status(500).json({ message: 'Could not delete post.' });
         }
     } catch (err) {
-        res.status(500).json({ message: 'Whoops, something went wrong.' });
+        res.status(500).json({ message: err.message});
     }
 });
 

@@ -11,13 +11,7 @@ const getUserByUsername = (username) => {
         .first();
 }
 
-const getUsersPosts = (userId) => {
-    return db('posts')
-        .where('user_id', userId)
-}
-
 module.exports = { 
     addUser,
-    getUserByUsername,
-    getUsersPosts
+    getUserByUsername
 };

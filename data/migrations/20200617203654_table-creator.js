@@ -25,7 +25,9 @@ exports.up = function(knex) {
             .unsigned()
             .notNullable()
             .references('id')
-            .inTable('posts');
+            .inTable('posts')
+            .onDelete('CASCADE')
+            .onUpdate('CASCADE');
         sub.json('subreddits').notNullable();
     })
 };

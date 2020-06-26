@@ -1,9 +1,10 @@
 const db = require('../dbConfig');
 const mappers = require('../helpers/mappers');
 
-const addPost = (post) => {
+const addPost = (userId, post) => {
     return db('posts')
-        .insert(post);
+        .insert(post)
+        .then(([id]) => get(userId, id));
 }
 
 const get = (userId, postId) => {
@@ -39,15 +40,20 @@ const getPostSubs = (postId) => {
         .where('post_id', postId)
 }
 
+const updatePost = (id, changes) => {
+    return db('posts')
+        .where('id', id)
+        .update(changes)
+}
+
 const deletePost = (id) => {
     return db('posts').where({ id: id }).del();
 }
-
-//NEED AN UPDATE QUERY
 
 module.exports = {
     get,
     addPost,
     getPostSubs,
+    updatePost,
     deletePost
 }
