@@ -59,7 +59,7 @@ router.post('/posts', async (req, res) => {
                 title: title,
                 description: description,
             })
-                .then(res => {
+                .then(async res => {
                     console.log(res);
                     let subs = JSON.stringify(res.outputData);
                     const subList = await Subs.addSubs(subs);
