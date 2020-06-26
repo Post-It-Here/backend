@@ -22,13 +22,21 @@ const get = (id) => {
     }
 }
 
-const createSubs = (subs) => {
+const addSubs = (subs) => {
     return db('subs')
         .insert(subs, 'id')
         .then(([id]) => {get(id)});
 }
 
+const updateSubs = (id, changes) => {
+    return db('subs')
+        .where('id', id)
+        .update(changes)
+        .then((count) => (count > 0 ? get(id) : null))
+};
+
 module.exports = {
     get,
-    createSubs
+    addSubs,
+    updateSubs
 }

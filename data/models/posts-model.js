@@ -2,16 +2,17 @@ const db = require('../dbConfig');
 const mappers = require('../helpers/mappers');
 
 const addPost = (post) => {
-    return db('posts').insert(post);
+    return db('posts')
+        .insert(post);
 }
 
-const get = (id) => {
+const get = (userId, postId) => {
     let query = db('posts as p');
 
-    if (id) {
-        query.where('p.id', id).first();
+    if (postId) {
+        query.where({ id: postId, user_id: userId}).first();
 
-        const promises = [query, getPostSubs(id)];
+        const promises = [query, getPostSubs(postId)];
         // [ posts, subs ]
 
         return Promise.all(promises)
@@ -27,7 +28,7 @@ const get = (id) => {
             }
         });
     } else {
-        return query.then(posts => {
+        return query.where({ user_id: userId }).then(posts => {
             return posts.map(post => mappers.postToBody(post));
         })
     }
