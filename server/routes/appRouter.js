@@ -61,7 +61,6 @@ router.post('/posts', async (req, res) => {
                 description: description,
             })
                 .then(async res => {
-                    console.log(res.data);
                     let subs = res.data.subreddits;
                     let stringified = JSON.stringify(subs);
                     const post_id = post.id;
@@ -85,7 +84,7 @@ router.post('/posts', async (req, res) => {
 
 //UPDATE A POST
 router.put('/posts/:id', async (req, res) => {
-    const changes = req.body;
+    let changes = req.body;
     const id = req.params.id;
 
     if (!changes.title && !changes.description) {
@@ -94,24 +93,24 @@ router.put('/posts/:id', async (req, res) => {
 
     try {
         const updated = await Posts.updatePost(id, changes);
-
         if (updated) {
             res.status(200).json(updated);
             axios.post('https://post-it-here-data-api.herokuapp.com/api/predict_many', {
-                headers: { 'Content-Type': 'application/json' },
-                title: title,
-                description: description,
+                title: changes.title,
+                description: changes.description,
             })
                 .then(async res => {
                     console.log(res.data);
                     let subs = res.data.subreddits;
-                    const subList = await Subs.addSubs(JSON.stringify(subs));
-
-                    if (subList) {
-                        console.log('success');
-                    } else {
-                        console.log('failed')
-                    }
+                    let stringified = JSON.stringify(subs);
+                    const post_id = id;
+                    const subList = await Subs.updateSubs(post_id, { 
+                        subreddits: stringified 
+                    })
+                    
+                    subList
+                        ? console.log('success')
+                        : console.log('failed')
                 })
                 .catch(err => console.error(err))
         }
