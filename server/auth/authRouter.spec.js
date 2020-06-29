@@ -9,7 +9,7 @@ describe('server.js', () => {
             return await request(server)
                 .post('/api/auth/register')
                 .send({ username: username, password: 'password' })
-                .expect(200)
+                .expect(201)
         });
 
         it('should return a JSON object', async () => {
