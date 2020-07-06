@@ -14,7 +14,6 @@ const get = (userId, postId) => {
         query.where({ id: postId, user_id: userId}).first();
 
         const promises = [query, getPostSubs(postId)];
-        // [ posts, subs ]
 
         return Promise.all(promises)
             .then((results) => {

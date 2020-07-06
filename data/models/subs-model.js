@@ -24,7 +24,7 @@ const get = (id) => {
 
 const addSubs = (subs) => {
     return db('subs')
-        .insert(subs)
+        .insert(subs, 'post_id')
 }
 
 const updateSubs = (id, changes) => {
