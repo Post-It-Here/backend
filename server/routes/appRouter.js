@@ -54,7 +54,7 @@ router.post('/posts', async (req, res) => {
             description: description 
         });
         if (post) {
-            res.status(200).json(post)
+            // res.status(200).json(post)
             axios.post('https://post-it-here-data-api.herokuapp.com/api/predict_many', {
                 headers: { 'Content-Type': 'application/json' },
                 title: title,
@@ -74,6 +74,7 @@ router.post('/posts', async (req, res) => {
                         : console.log('failed')
                 })
                 .catch(err => console.error(err))
+            res.status(200).json(post)
         } else {
             res.status(500).json({ message: 'There was a problem with creating a post.' });
         }
