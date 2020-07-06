@@ -3,7 +3,7 @@ const mappers = require('../helpers/mappers');
 
 const addPost = (userId, post) => {
     return db('posts')
-        .insert(post)
+        .insert(post, 'id')
         .then(([id]) => get(userId, id));
 }
 
